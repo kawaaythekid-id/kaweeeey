@@ -1,144 +1,165 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Kotak Putih Geser & Minimize + Start & End</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: #f0f0f0;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<title>Kotak Putih Auto Teleport 9 Tempat</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: #f0f0f0;
+    font-family: Arial, sans-serif;
+  }
 
-    .box {
-      width: 300px;
-      height: 220px;
-      background: white;
-      position: absolute;
-      top: 100px;
-      left: 100px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      display: flex;
-      flex-direction: column;
-    }
+  .kotak {
+    width: 320px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    transition: box-shadow 0.3s;
+  }
 
-    .title-bar {
-      background: #007bff;
-      color: white;
-      padding: 8px;
-      cursor: move;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 6px 6px 0 0;
-    }
+  .kotak-header {
+    padding: 10px 15px;
+    background: #fafafa;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    border-radius: 12px 12px 0 0;
+  }
 
-    .content {
-      flex: 1;
-      padding: 10px;
-      overflow: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+  .kotak-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+  }
 
-    .btn {
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+  .tombol {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #555;
+    margin-left: 5px;
+  }
 
-    .btn:hover {
-      background: #0056b3;
-    }
+  .kotak-body {
+    padding: 15px;
+    display: block;
+    color: #555;
+    font-size: 14px;
+  }
 
-    .btn-min {
-      background: white;
-      color: #007bff;
-      border: none;
-      border-radius: 4px;
-      padding: 2px 6px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-  </style>
+  button.action-btn {
+    padding: 8px 12px;
+    margin: 5px 5px 0 0;
+    border: none;
+    border-radius: 6px;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  button.action-btn.end {
+    background: #f44336;
+  }
+</style>
 </head>
 <body>
 
-<div class="box" id="myBox">
-  <div class="title-bar" id="titleBar">
-    <span>Kotak Putih</span>
-    <button class="btn-min" id="minBtn">_</button>
+<div class="kotak" id="kotak">
+  <div class="kotak-header" id="header">
+    <h3>Auto Teleport</h3>
+    <div>
+      <button class="tombol" id="minimize">−</button>
+      <button class="tombol" id="close">×</button>
+    </div>
   </div>
-  <div class="content" id="boxContent">
-    <p>Ini adalah isi kotak putih yang bisa digeser dan di-minimize.</p>
-    <button class="btn" id="startBtn">Start</button>
-    <button class="btn" id="endBtn">End</button>
+  <div class="kotak-body" id="body">
+    <p>Tekan Start untuk mulai teleportasi otomatis ke 9 tempat.</p>
+    <button class="action-btn" id="start">Start</button>
+    <button class="action-btn end" id="end">End</button>
   </div>
 </div>
 
 <script>
-  // Fungsi drag
-  const box = document.getElementById("myBox");
-  const titleBar = document.getElementById("titleBar");
-  let isDragging = false, offsetX, offsetY;
+  // Drag
+  const kotak = document.getElementById('kotak');
+  const header = document.getElementById('header');
+  let offsetX = 0, offsetY = 0, isDragging = false;
 
-  titleBar.addEventListener("mousedown", (e) => {
+  header.addEventListener('mousedown', e => {
     isDragging = true;
-    offsetX = e.clientX - box.offsetLeft;
-    offsetY = e.clientY - box.offsetTop;
+    offsetX = e.clientX - kotak.offsetLeft;
+    offsetY = e.clientY - kotak.offsetTop;
   });
 
-  document.addEventListener("mousemove", (e) => {
-    if (isDragging) {
-      box.style.left = (e.clientX - offsetX) + "px";
-      box.style.top = (e.clientY - offsetY) + "px";
+  document.addEventListener('mouseup', () => isDragging = false);
+
+  document.addEventListener('mousemove', e => {
+    if(isDragging){
+      kotak.style.left = (e.clientX - offsetX) + 'px';
+      kotak.style.top = (e.clientY - offsetY) + 'px';
     }
   });
 
-  document.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
-
-  // Fungsi minimize
-  const minBtn = document.getElementById("minBtn");
-  const content = document.getElementById("boxContent");
+  // Minimize
+  const minimize = document.getElementById('minimize');
+  const body = document.getElementById('body');
   let minimized = false;
-
-  minBtn.addEventListener("click", () => {
+  minimize.addEventListener('click', () => {
     minimized = !minimized;
-    content.style.display = minimized ? "none" : "flex";
-    minBtn.textContent = minimized ? "+" : "_";
+    body.style.display = minimized ? 'none' : 'block';
+    minimize.textContent = minimized ? '+' : '−';
   });
 
-  // Fungsi Start & End (contoh)
-  document.getElementById("startBtn").addEventListener("click", () => {
-    alert("Start ditekan!");
-  });
+  // Close
+  const close = document.getElementById('close');
+  close.addEventListener('click', () => kotak.style.display = 'none');
 
-  document.getElementById("endBtn").addEventListener("click", () => {
-    alert("End ditekan!");
-  });
+  // Auto Teleport
+  const startBtn = document.getElementById('start');
+  const endBtn = document.getElementById('end');
+  let teleportInterval = null;
+
+  // 9 koordinat teleport
+  const positions = [
+    {x: 100, y: 0, z: 100},
+    {x: 200, y: 0, z: 50},
+    {x: -50, y: 0, z: 150},
+    {x: 0, y: 0, z: 0},
+    {x: 75, y: 0, z: -100},
+    {x: -120, y: 0, z: 80},
+    {x: 50, y: 0, z: 200},
+    {x: -200, y: 0, z: -50},
+    {x: 0, y: 0, z: -150}
+  ];
+
+  function startTeleport() {
+    let i = 0;
+    if (teleportInterval) return; // cegah ganda
+    teleportInterval = setInterval(() => {
+      const pos = positions[i];
+      console.log(`Teleport ke X:${pos.x}, Y:${pos.y}, Z:${pos.z}`);
+      i = (i + 1) % positions.length;
+    }, 2000);
+  }
+
+  function endTeleport() {
+    clearInterval(teleportInterval);
+    teleportInterval = null;
+    console.log('Teleport berhenti');
+  }
+
+  startBtn.addEventListener('click', startTeleport);
+  endBtn.addEventListener('click', endTeleport);
 </script>
 
-</body>
-</html>
-
-<html>
-<head>
-  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
-  <title>Hello, World!</title>
-</head>
-<body>
-  <h1>
-    Hello, World!
-  </h1>
 </body>
 </html>
