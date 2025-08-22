@@ -1,0 +1,66 @@
+-- Auto Teleport GUI (LocalScript)
+-- Paste ke StarterGui > LocalScript
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- === Sesuaikan 9 posisi di bawah ini ===
+local TELEPORT_POSITIONS = {
+    Vector3.new(0, 10, 0),
+    Vector3.new(10, 10, 0),
+    Vector3.new(20, 10, 0),
+    Vector3.new(30, 10, 0),
+    Vector3.new(40, 10, 0),
+    Vector3.new(50, 10, 0),
+    Vector3.new(60, 10, 0),
+    Vector3.new(70, 10, 0),
+    Vector3.new(80, 10, 0)
+}
+
+-- GUI Setup
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 250, 0, 150)
+frame.Position = UDim2.new(0, 50, 0, 50)
+frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+frame.BorderSizePixel = 2
+frame.Parent = screenGui
+
+local startButton = Instance.new("TextButton")
+startButton.Size = UDim2.new(0, 100, 0, 50)
+startButton.Position = UDim2.new(0, 20, 0, 50)
+startButton.Text = "Start"
+startButton.Parent = frame
+
+local endButton = Instance.new("TextButton")
+endButton.Size = UDim2.new(0, 100, 0, 50)
+endButton.Position = UDim2.new(0, 130, 0, 50)
+endButton.Text = "End"
+endButton.Parent = frame
+
+-- Teleport Logic
+local teleporting = false
+
+local function startTeleport()
+    teleporting = true
+    while teleporting do
+        for _, pos in ipairs(TELEPORT_POSITIONS) do
+            if not teleporting then break end
+            humanoidRootPart.CFrame = CFrame.new(pos)
+            wait(1) -- delay 1 detik, bisa diubah
+        end
+    end
+end
+
+local function stopTeleport()
+    teleporting = false
+end
+
+startButton.MouseButton1Click:Connect(startTeleport)
+endButton.MouseButton1Click:Connect(stopTeleport)
